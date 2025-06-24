@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>F.O.C.U.S - Multi-Fish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f4ff',
+                            100: '#e0e9ff',
+                            200: '#c7d5ff',
+                            300: '#a5b8ff',
+                            400: '#7f90ff',
+                            500: '#5f66ff',
+                            600: '#4b3df5',
+                            700: '#3c2fd8',
+                            800: '#312aae',
+                            900: '#2d2a89',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .risk-low {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+        }
+
+        .risk-medium {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .risk-high {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .complexity-low {
+            background-color: #d1fae5;
+        }
+
+        .complexity-medium {
+            background-color: #fef3c7;
+        }
+
+        .complexity-high {
+            background-color: #fee2e2;
+        }
+
+        .fish-entry {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f9fafb;
+            position: relative;
+        }
+
+        .remove-fish-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #fee2e2;
+            color: #ef4444;
+            border: none;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .fish-summary {
+            background-color: #e0f2fe;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Header -->
+            <div class="bg-navy-900 text-white p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold"> F.O.C.U.S </h1>
+                        <p class="mt-2">Fishing Optimization & Candidate Underpinning Strategy</p>
+                    </div>
+                    <div class="relative w-16 h-16 flex items-center justify-center">
+                        <div class="absolute inset-0 bg-blue-500 rounded-full shadow-lg"></div>
+                        <i class="fas fa-fish text-white text-3xl relative z-10"></i>
+                        <div class="absolute inset-0 border-4 border-blue-600 rounded-full opacity-30"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="p-6">
+                <!-- Tabs -->
+                <div class="flex border-b border-navy-200 mb-6 overflow-x-auto">
+                    <button class="tab-btn py-2 px-4 font-medium text-navy-900 border-b-2 border-navy-900" data-tab="calculator">Fill in Data</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="economic">Fishing Operation Summary</button>
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="probability
+                    
+                    <button class="tab-btn py-2 px-4 font-medium text-gray-500" data-tab="mitigation"></button>
+                </div>
+
+           <!-- Calculator Tab -->
+<div id="calculator" class="tab-content active">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Left Column -->
+        <div>
+            <h2 class="text-xl font-semibold mb-4 text-blue-800">Well Data</h2>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Well Name</label>
+                <input type="text" id="wellName" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter well name">
+            </div>
+<div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Current Oil Production (BOPD)</label>
+                    <input
+                      type="number"
+                      id="oilProduction"
+                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="1000"
+                    />
+                </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Field Name</label>
+                <select id="fieldName" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="MINAS" data-complexity="0.9215" data-type="SLO" data-watercut="65%" data-temp="27°C" data-depth="7600ft" data-geo="0.95" data-oper="0.97">MINAS</option>
+                    <option value="PETKO" data-complexity="1" data-type="SLO" data-watercut="30%" data-temp="27°C" data-depth="8200ft" data-geo="1" data-oper="1">PETKO</option>
+                    <option value="LIBO" data-complexity="0.9215" data-type="SLO" data-watercut="30%" data-temp="27°C" data-depth="7600ft" data-geo="0.95" data-oper="0.97">LIBO</option>
+                    <option value="BALAM" data-complexity="0.9215" data-type="SLO" data-watercut="35%" data-temp="27°C" data-depth="7600ft" data-geo="0.95" data-oper="0.97">BALAM</option>
+                    <option value="BANGKO" data-complexity="0.9215" data-type="SLO" data-watercut="30%" data-temp="27°C" data-depth="7600ft" data-geo="0.95" data-oper="0.97">BANGKO</option>
+                    <option value="BEKASAP" data-complexity="0.9215" data-type="SLO" data-watercut="30%" data-temp="27°C" data-depth="7600ft" data-geo="0.95" data-oper="0.97">BEKASAP</option>
+                    <option value="DSF" data-complexity="0.855" data-type="HO" data-watercut="40%" data-temp="42°C" data-depth="7600ft" data-geo="0.9" data-oper="0.95">DSF</option>
+                </select>
+            </div>
+   <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Oil Price ($/bbl)</label>
+                    <input
+                      type="number"
+                      id="oilPrice"
+                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="70"
+                    />
+                </div>
+           
+
+           
+
+           
+
+            <!-- New Fishing Type Section -->
+          
+
+            <div class="mt-6 border-t pt-4">
+                <h2 class="text-xl font-semibold mb-4 text-blue-800">Wellbore Condition</h2>
+
+              
+
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Hole Size (inches)</label>
+                <input type="number" id="holeSize" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="8.5" />
+            </div>
+
+ <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Mud Weight (ppg)</label>
+                <input type="number" id="mudWeight" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="10.5" />
+            </div>
+
+             <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Casing Condition</label>
+                <select id="casingCondition" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="intact">Intact</option>
+                    <option value="damaged">Damaged</option>
+                    <option value="parted">Parted</option>
+                </select>
+            </div>
+
+              <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Fishing Type</label>
+                <select id="fishingType" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="openHole">Open Hole Fishing</option>
+                    <option value="casedHole">Cased Hole Fishing</option>
+                </select>
+            </div>
+            
+             <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Well Geometry</label>
+                <select id="wellGeometry" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="lt30">30°</option>
+                    <option value="31to60">31° to 60° </option>
+                    <option value="gt60">Greater than 60° </option>
+                </select>
+            </div>
+            
+              <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Formation Above Downhole Object</label>
+                    <select
+                      id="formationAbove"
+                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+    <label class="block text-gray-700 mb-2">Period Downhole Object on the Well?</label>
+    <select id="objectPeriod" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="0.04">Less than 2 years</option>
+        <option value="0.1">2 to 5 years</option>
+        <option value="0.16">More than 5 years</option>
+    </select>
+</div>
+
+<div class="mb-4">
+    <label class="block text-gray-700 mb-2">Downhole Object Using Safety Joint?</label>
+    <select id="safetyJoint" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="0.1">Yes</option>
+        <option value="0.05">No</option>
+    </select>
+</div>
+
+<div class="mb-4">
+    <label class="block text-gray-700 mb-2">Downhole Object Have Tail?</label>
+    <select id="tailPresence" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="0.0375">Have Tail <100ft</option>
+        <option value="0.075">Have Tail >100ft</option>
+        <option value="0.0125">Doesn't have tail</option>
+    </select>
+</div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Well Ex TPA (Temporary Plug Abandoned)</label>
+                    <select
+                      id="wellExTpa"
+                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+               
+            </div>
+        </div>
+                        
+
+        <!-- Right Column -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-blue-800">Fish Entries</h2>
+                <button
+                  id="addFishBtn"
+                  class="bg-navy-700 hover:bg-navy-800 text-white px-4 py-2 rounded-lg flex items-center shadow-md transition-colors duration-200"
+                >
+                    <i class="fas fa-plus mr-2"></i> Add Fish
+                </button>
+            </div>
+
+            <div id="fishEntriesContainer">
+                <!-- Fish entries will be added here -->
+            </div>
+
+            <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2 text-blue-800">Summary of All Fish</h3>
+                <div id="fishSummary" class="text-sm text-gray-700">
+                    No fish entries added yet.
+                </div>
+            </div>
+
+            <button
+              id="calculateBtn"
+              class="w-full mt-6 bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+            >
+                Calculate All Fishing Parameters
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Economic Analysis Tab -->
+<div id="economic" class="tab-content">
+    <h2 class="text-xl font-semibold mb-6 text-blue-800">Fishing Operation Summary</h2>
+
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-4">Potential Fishing </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 border rounded-lg bg-blue-50">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">Well Name:</span>
+                        <span id="wellNameResult" class="font-bold text-blue-800">--</span>
+                    </div>
+                </div>
+                <div class="p-4 border rounded-lg bg-blue-50">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">Fishing Probability</span>
+                        <span id="successRate" class="font-bold text-blue-800">--</span>
+                    </div>
+                </div>
+                <div class="p-4 border rounded-lg bg-blue-50">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">Estimate cost for fishing job</span>
+                        <span id="estimatedCost" class="font-bold text-blue-800">--</span>
+                    </div>
+                </div>
+                <div class="p-4 border rounded-lg bg-blue-50">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">Estimate cycle for fishing job</span>
+                        <span id="cycleTime" class="font-bold text-blue-800">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Program Generation Section -->
+<div class="mt-8 bg-white p-6 rounded-lg shadow">
+    <h3 class="text-lg font-semibold mb-4 text-blue-800">Planned Fishing</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+            <div class="p-4 border rounded-lg bg-blue-50">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium">Fishing Success Rate</span>
+                    <span id="successPrediction" class="font-bold text-blue-800">--</span>
+                </div>
+            </div>
+            
+            <div class="p-4 border rounded-lg bg-blue-50">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium">Estimasi Cost Fishing adalah</span>
+                    <span id="fishingCostEstimate" class="font-bold text-blue-800">--</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="p-4 border rounded-lg bg-blue-50">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium">Cycle Time Estimation</span>
+                    <span id="fishingCycleTime" class="font-bold text-blue-800">--</span>
+                </div>
+            </div>
+            
+            <div class="p-4 border rounded-lg bg-blue-50">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium">EFT (Economic Fishing Time)</span>
+                    <span id="economicFishingTime" class="font-bold text-blue-800">--</span>
+                </div>
+            </div>
+            
+            <div class="p-4 border rounded-lg bg-blue-50">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium">Plan Fishing Cost Vs EFT</span>
+                    <span id="costVsEft" class="font-bold text-blue-800">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Chart Section -->
+<div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+       
+    </div>
+</div>
+
+<!-- Probability Analysis Tab -->
+<div id="probability" class="tab-content">
+    <h2 class="text-xl font-semibold mb-4 text-blue-800">Probability Analysis</h2>
+
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-chart-pie text-blue-800 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold">Success Probability by Tool Type</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="p-4 border rounded-lg">
+                <div class="flex justify-between mb-2">
+                    <span>Overshot</span>
+                    <span class="font-bold">75%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-green-500 h-2.5 rounded-full" style="width: 75%"></div>
+                </div>
+            </div>
+            <div class="p-4 border rounded-lg">
+                <div class="flex justify-between mb-2">
+                    <span>Spear</span>
+                    <span class="font-bold">65%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 65%"></div>
+                </div>
+            </div>
+            <div class="p-4 border rounded-lg">
+                <div class="flex justify-between mb-2">
+                    <span>Mechanical Packer</span>
+                    <span class="font-bold">60%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 60%"></div>
+                </div>
+            </div>
+            <div class="p-4 border rounded-lg">
+                <div class="flex justify-between mb-2">
+                    <span>Cup Packer</span>
+                    <span class="font-bold">55%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 55%"></div>
+                </div>
+            </div>
+            <div class="p-4 border rounded-lg">
+                <div class="flex justify-between mb-2">
+                    <span>Junk Basket</span>
+                    <span class="font-bold">50%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-orange-500 h-2.5 rounded-full" style="width: 50%"></div>
+                </div>
+            </div>
+            <div class="p-4 border rounded-lg">
+                <div class="flex justify-between mb-2">
+                    <span>Washover Pipe</span>
+                    <span class="font-bold">70%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-green-500 h-2.5 rounded-full" style="width: 70%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h4 class="font-medium mb-2">Factors Affecting Success:</h4>
+            <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                <li>Depth of fish (deeper = lower success)</li>
+                <li>Hole condition (washed out = lower success)</li>
+                <li>Time since stuck (longer = lower success)</li>
+                <li>Mud properties (higher weight = lower success)</li>
+                <li>Fish condition (broken = lower success)</li>
+                <li>Casing condition (parted/damaged = lower success)</li>
+                <li>Field complexity (higher = lower success)</li>
+                <li>Well Ex TPA status (abandoned = lower success)</li>
+                <li>Formation above object (present = higher success)</li>
+                <li>Age of downhole object (older = lower success)</li>
+                <li>Safety joint usage (present = higher success)</li>
+                <li>Tail presence (long tail = lower success)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Success Probability Tab -->
+<div id="success-probability" class="tab-content">
+    <h2 class="text-xl font-semibold mb-4 text-blue-800">Success Probability by Fish Type</h2>
+
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-percentage text-blue-800 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold">Historical Success Rates by Fish Type</h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Success Probability</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visualization</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10-3/4" Mechanical Packer</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9-5/8" Mechanical Packer</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">75%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7" Mechanical Packer</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">97%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 97%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9-5/8" CPA Assembly</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7" CPA Assembly</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7" Tubing Hanger</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ESP Tubing</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">83%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 83%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Pump</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">92%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">CIBP</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 81%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tubular</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">90%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tubular Cemented</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">67%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 67%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Drilling BHA</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">63%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 63%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Logging Tool</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">82%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 82%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">4" Liner</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">5-1/2" Liner</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">93%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 93%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">6-5/8" Liner</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">92%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Casing</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">DC</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Bullplug</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Cone</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sand Bailer</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sinker Bar</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Junks (others)</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">75%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6">
+            <h4 class="font-medium mb-2">Success Probability Key:</h4>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                    <span class="text-sm">High (80-100%)</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
+                    <span class="text-sm">Medium (60-79%)</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                    <span class="text-sm">Low (Below 60%)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mitigation Strategies Tab -->
+<div id="mitigation" class="tab-content">
+    <h2 class="text-xl font-semibold mb-6 text-blue-800">Mitigation Strategies</h2>
+
+    <div class="space-y-6">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex items-start mb-4">
+                <div
+                  class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0"
+                >
+                    <i class="fas fa-tools text-blue-800 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Prevention Strategies</h3>
+                    <p class="text-gray-700">Implement these practices to reduce fishing operations:</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <h4 class="font-medium">Proper BHA Design</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">
+                        Ensure adequate stabilization and proper placement of centralizers to prevent key seating.
+                    </p>
+                </div>
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <h4 class="font-medium">Optimal Mud Properties</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">
+                        Maintain proper mud weight, rheology, and lubricity to minimize differential sticking.
+                    </p>
+                </div>
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <h4 class="font-medium">Torque and Drag Monitoring</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">Real-time monitoring to detect potential sticking issues early.</p>
+                </div>
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <h4 class="font-medium">Proper Cementing Practices</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">Ensure good cement bond to prevent casing issues.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex items-start mb-4">
+                <div
+                  class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0"
+                >
+                    <i class="fas fa-exclamation-triangle text-blue-800 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Contingency Plans</h3>
+                    <p class="text-gray-700">Prepare these strategies in case fishing becomes necessary:</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-arrow-right text-blue-600"></i>
+                        </div>
+                        <h4 class="font-medium">Immediate Response Plan</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">Have a documented procedure for initial fishing attempts.</p>
+                </div>
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-arrow-right text-blue-600"></i>
+                        </div>
+                        <h4 class="font-medium">Tool Inventory</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">Maintain an inventory of common fishing tools on location.</p>
+                </div>
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-arrow-right text-blue-600"></i>
+                        </div>
+                        <h4 class="font-medium">Expert Contact List</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">Have contact information for fishing specialists readily available.</p>
+                </div>
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div
+                          class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3"
+                        >
+                            <i class="fas fa-arrow-right text-blue-600"></i>
+                        </div>
+                        <h4 class="font-medium">Alternative Methods</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 pl-11">Prepare plans for milling, sidetracking, or abandonment if needed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(tabBtn => {
+                    tabBtn.classList.remove('text-blue-800', 'border-b-2', 'border-blue-800');
+                    tabBtn.classList.add('text-gray-500');
+                });
+                btn.classList.remove('text-gray-500');
+                btn.classList.add('text-blue-800', 'border-b-2', 'border-blue-800');
+
+                // Update active tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+
+                // Initialize chart when economic tab is opened
+                if (tabId === 'economic') {
+                    updateCostChart(9.52); // Default value
+                }
+            });
+        });
+
+        // Fish entry management
+        let fishCounter = 0;
+        const fishEntriesContainer = document.getElementById('fishEntriesContainer');
+        const addFishBtn = document.getElementById('addFishBtn');
+
+        addFishBtn.addEventListener('click', addFishEntry);
+
+        function addFishEntry() {
+            fishCounter++;
+            const fishId = `fish-${fishCounter}`;
+
+            const fishEntry = document.createElement('div');
+            fishEntry.className = 'fish-entry';
+            fishEntry.id = fishId;
+
+            fishEntry.innerHTML = `
+                <button class="remove-fish-btn" data-fish-id="${fishId}">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3 class="font-semibold text-blue-700 mb-3">Fish #${fishCounter}</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2">Fish Length (feet)</label>
+                            <input type="number" class="fish-length w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="30" />
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2">TOF Condition</label>
+                            <select class="tof-condition w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1">Condition #1 - Ready for fishing </option>
+                                <option value="0.85">Condition #2 - Needs 1 step prep</option>
+                                <option value="0.8">Condition #3 - Needs >1 step prep</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Fish Detail Information</label>
+                            <select class="fish-detail-condition w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1">Condition 1</option>
+                                <option value="0.85">Condition 2</option>
+                                <option value="0.8">Condition 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            <div class="mb-4 bg-gray-50 p-3 rounded-lg">
+                <h4 class="font-medium text-sm mb-2 text-gray-700">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        </div>
+
+                    <div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2">Fish Type</label>
+                            <select class="fish-type w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="mechPacker10_3_4">10-3/4" Mechanical Packer</option>
+                                <option value="mechPacker9_5_8">9-5/8" Mechanical Packer</option>
+                                <option value="mechPacker7">7" Mechanical Packer</option>
+                                <option value="cpa7">7" CPA Assembly</option>
+                                <option value="cpa9_5_8">9-5/8" CPA Assembly</option>
+                                <option value="tubingHanger">7" Tubing Hanger</option>
+                                <option value="espTubing">ESP Tubing</option>
+                                <option value="pump">Pump</option>
+                                <option value="cibp">CIBP</option>
+                                <option value="tubular">Tubular</option>
+                                <option value="tubularCemented">Tubular Cemented</option>
+                                <option value="drillingBHA">Drilling BHA</option>
+                                <option value="loggingTool">Logging Tool</option>
+                                <option value="liner4">4" Liner</option>
+                                <option value="liner5_1_2">5-1/2" Liner</option>
+                                <option value="liner6_5_8">6-5/8" Liner</option>
+                                <option value="casing">Casing</option>
+                                <option value="dc">DC</option>
+                                <option value="bullplug">Bullplug</option>
+                                <option value="cone">Cone</option>
+                                <option value="sandBailer">Sand Bailer</option>
+                                <option value="sinkerBar">Sinker Bar</option>
+                                <option value="junks">Junks (others)</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="fish-results mt-4 hidden">
+                    <div class="fish-summary">
+                        <div class="flex justify-between mb-1">
+                            <span>Pull Force:</span>
+                            <span class="pull-force font-medium">--</span>
+                        </div>
+                        <div class="flex justify-between mb-1">
+                            <span>Impact Force:</span>
+                            <span class="impact-force font-medium">--</span>
+                        </div>
+                        <div class="flex justify-between mb-1">
+                            <span>Time Estimate:</span>
+                            <span class="time-estimate font-medium">--</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            fishEntriesContainer.appendChild(fishEntry);
+
+            // Add event listener to the remove button
+            fishEntry.querySelector('.remove-fish-btn').addEventListener('click', function () {
+                removeFishEntry(this.getAttribute('data-fish-id'));
+            });
+
+            // Set default values for new fish entry
+            fishEntry.querySelector('.fish-depth').value = '5000';
+            fishEntry.querySelector('.fish-length').value = '30';
+        }
+
+        function removeFishEntry(fishId) {
+            const fishEntry = document.getElementById(fishId);
+            if (fishEntry) {
+                fishEntry.remove();
+                updateFishSummary();
+            }
+        }
+
+        // Calculation logic
+        document.getElementById('calculateBtn').addEventListener('click', calculateAllFishParameters);
+
+        function calculateAllFishParameters() {
+            const fishEntries = document.querySelectorAll('.fish-entry');
+            if (fishEntries.length === 0) {
+                alert('Please add at least one fish entry before calculating.');
+                return;
+            }
+
+            let totalPullForce = 0;
+            let totalImpactForce = 0;
+            let totalTimeEstimate = 0;
+            let fishCount = 0;
+
+            fishEntries.forEach(fishEntry => {
+                const result = calculateSingleFishParameters(fishEntry);
+                if (result) {
+                    totalPullForce += result.pullForce;
+                    totalImpactForce += result.impactForce;
+                    totalTimeEstimate += result.timeEstimate;
+                    fishCount++;
+
+                    // Display results for this fish
+                    const resultsDiv = fishEntry.querySelector('.fish-results');
+                    resultsDiv.classList.remove('hidden');
+
+                    fishEntry.querySelector('.pull-force').textContent = Math.round(result.pullForce) + ' lbs';
+                    fishEntry.querySelector('.impact-force').textContent = Math.round(result.impactForce) + ' lbs';
+                    fishEntry.querySelector('.time-estimate').textContent = result.timeEstimate.toFixed(1) + ' days';
+                }
+            });
+
+            // Update summary
+            // Get the success rates from economic analysis
+            const successRate = document.getElementById('successRate').textContent;
+            const plannedSuccessRate = document.getElementById('successPrediction').textContent;
+            
+            updateFishSummary(
+                totalPullForce,
+                totalImpactForce,
+                totalTimeEstimate,
+                fishCount,
+                successRate,
+                plannedSuccessRate
+            );
+
+            // Update economic analysis
+            updateEconomicAnalysis(totalTimeEstimate);
+        }
+
+        function calculateSingleFishParameters(fishEntry) {
+            // Get new parameters
+            const fishingType = document.getElementById('fishingType').value;
+            const oilProduction = parseFloat(document.getElementById('oilProduction').value) || 0;
+            const oilPrice = parseFloat(document.getElementById('oilPrice').value) || 0;
+
+            // Get well parameters
+            const fieldName = document.getElementById('fieldName').value;
+            const holeSize = parseFloat(document.getElementById('holeSize').value) || 0;
+            const mudWeight = parseFloat(document.getElementById('mudWeight').value) || 0;
+            const casingCondition = document.getElementById('casingCondition').value;
+            const wellExTpa = document.getElementById('wellExTpa').value;
+            const formationAbove = document.getElementById('formationAbove').value;
+
+            // Get fish-specific parameters
+            const fishLength = parseFloat(fishEntry.querySelector('.fish-length').value) || 0;
+            const fishType = fishEntry.querySelector('.fish-type').value;
+            
+            
+
+
+
+            // Get condition factors
+            const tofCondition = parseFloat(fishEntry.querySelector('.tof-condition').value) || 1;
+            const fishDetailCondition = parseFloat(fishEntry.querySelector('.fish-detail-condition').value) || 1;
+
+            // Calculate base values
+            let pullForce = 0;
+            let impactForce = 0;
+            let timeEstimate = 0;
+            let stuckProbability = 0;
+            
+            // Hole size factor (larger holes make fishing more difficult)
+            const holeSizeFactor = holeSize < 6 ? 1.2 : 
+                                 holeSize < 8 ? 1.0 :
+                                 holeSize < 10 ? 0.9 : 0.8;
+
+            // Calculate based on fish type and apply hole size factor
+            switch (fishType) {
+                case 'mechPacker10_3_4':
+                case 'mechPacker9_5_8':
+                case 'mechPacker7':
+                    pullForce = 15000;
+                    impactForce = 5000;
+                    timeEstimate = 3;
+                    stuckProbability = 40;
+                    break;
+                case 'cpa7':
+                case 'cpa9_5_8':
+                    pullForce = 12000;
+                    impactForce = 4000;
+                    washoverVolume = fishLength * 0.7;
+                    timeEstimate = 2.5;
+                    stuckProbability = 35;
+                    break;
+                case 'tubingHanger':
+                    pullForce = 8000;
+                    impactForce = 3000;
+                    washoverVolume = fishLength * 0.6;
+                    timeEstimate = 2;
+                    stuckProbability = 30;
+                    break;
+                case 'espTubing':
+                case 'pump':
+                case 'cibp':
+                    pullForce = 10000;
+                    impactForce = 3500;
+                    washoverVolume = fishLength * 0.65;
+                    timeEstimate = 2.2;
+                    stuckProbability = 32;
+                    break;
+                case 'tubular':
+                    pullForce = 5000;
+                    impactForce = 2000;
+                    washoverVolume = fishLength * 0.5;
+                    timeEstimate = 1.5;
+                    stuckProbability = 25;
+                    break;
+                case 'tubularCemented':
+                    pullForce = 20000;
+                    impactForce = 8000;
+                    washoverVolume = fishLength * 1.2;
+                    timeEstimate = 5;
+                    stuckProbability = 60;
+                    break;
+                case 'drillingBHA':
+                    pullForce = 18000;
+                    impactForce = 7000;
+                    washoverVolume = fishLength * 1.0;
+                    timeEstimate = 4;
+                    stuckProbability = 50;
+                    break;
+                case 'loggingTool':
+                    pullForce = 3000;
+                    impactForce = 1000;
+                    washoverVolume = fishLength * 0.3;
+                    timeEstimate = 1;
+                    stuckProbability = 20;
+                    break;
+                case 'liner4':
+                case 'liner5_1_2':
+                case 'liner6_5_8':
+                    pullForce = 25000;
+                    impactForce = 10000;
+                    washoverVolume = fishLength * 1.5;
+                    timeEstimate = 6;
+                    stuckProbability = 70;
+                    break;
+                case 'casing':
+                    pullForce = 30000;
+                    impactForce = 12000;
+                    washoverVolume = fishLength * 2.0;
+                    timeEstimate = 8;
+                    stuckProbability = 80;
+                    break;
+                case 'dc':
+                case 'bullplug':
+                case 'cone':
+                case 'sandBailer':
+                case 'sinkerBar':
+                case 'junks':
+                    pullForce = 6000 + fishDepth * 0.3;
+                    impactForce = 2500 + fishDepth * 0.1;
+                    washoverVolume = fishLength * 0.55;
+                    timeEstimate = 1.8 + fishDepth / 7000;
+                    stuckProbability = 28;
+                    break;
+                default:
+                    pullForce = 10000 + fishDepth * 0.4;
+                    impactForce = 4000 + fishDepth * 0.15;
+                    washoverVolume = fishLength * 0.7;
+                    timeEstimate = 2.5 + fishDepth / 6000;
+                    stuckProbability = 35;
+            }
+
+            // Apply hole size factor to all parameters
+            pullForce *= holeSizeFactor;
+            impactForce *= holeSizeFactor;
+            timeEstimate *= (2 - holeSizeFactor); // Smaller hole = more time
+            stuckProbability *= (2 - holeSizeFactor);
+
+            // Adjust based on how long object has been downhole
+const objectPeriod = parseFloat(document.getElementById('objectPeriod').value) || 0;
+pullForce *= (1 + objectPeriod);
+impactForce *= (1 + objectPeriod);
+timeEstimate *= (1 + objectPeriod);
+stuckProbability *= (1 + objectPeriod);
+
+const safetyJoint = parseFloat(document.getElementById('safetyJoint').value) || 0;
+pullForce *= (1 - safetyJoint);  // Reduces required force if safety joint exists
+impactForce *= (1 - safetyJoint);
+timeEstimate *= (1 - safetyJoint);
+stuckProbability *= (1 - safetyJoint);
+
+const tailPresence = parseFloat(document.getElementById('tailPresence').value) || 0;
+pullForce *= (1 + tailPresence);
+impactForce *= (1 + tailPresence);
+timeEstimate *= (1 + tailPresence);
+stuckProbability *= (1 + tailPresence);
+
+            // Adjust based on fishing type (Open Hole or Cased Hole)
+            if (fishingType === 'openHole') {
+                pullForce *= 1.2;
+                impactForce *= 1.2;
+                timeEstimate *= 1.3;
+                stuckProbability *= 1.4;
+            } else if (fishingType === 'casedHole') {
+                pullForce *= 1.0;
+                impactForce *= 1.0;
+                timeEstimate *= 1.0;
+                stuckProbability *= 1.0;
+            }
+
+            // Adjust based on oil production and price
+            if (oilProduction > 0 && oilPrice > 0) {
+                const dailyLoss = oilProduction * oilPrice;
+                // Adjust time estimate based on production loss
+                timeEstimate *= Math.min(1, 10000 / dailyLoss);
+            }
+
+            // Adjust based on mud weight
+            if (mudWeight > 12) {
+                pullForce *= 1.2;
+                impactForce *= 1.2;
+                timeEstimate *= 1.2;
+                stuckProbability *= 1.3;
+            } else if (mudWeight > 10) {
+                pullForce *= 1.1;
+                impactForce *= 1.1;
+                timeEstimate *= 1.1;
+                stuckProbability *= 1.1;
+            }
+
+            // Incorporate field-specific data attributes
+            const selectedField = document.getElementById('fieldName').selectedOptions[0];
+            const geoFactor = parseFloat(selectedField.getAttribute('data-geo')) || 1;
+            const operFactor = parseFloat(selectedField.getAttribute('data-oper')) || 1;
+            const watercut = selectedField.getAttribute('data-watercut');
+            const temp = selectedField.getAttribute('data-temp');
+            const depth = selectedField.getAttribute('data-depth');
+
+            // Apply geological factor
+            pullForce *= geoFactor;
+            impactForce *= geoFactor;
+            timeEstimate *= (2 - geoFactor); // Higher geo factor reduces time
+            stuckProbability *= (2 - geoFactor);
+
+            // Apply operational factor
+            pullForce *= operFactor;
+            impactForce *= operFactor;
+            timeEstimate *= operFactor;
+            stuckProbability *= (2 - operFactor);
+
+            // Adjust based on watercut
+            if (watercut && watercut.includes('%')) {
+                const watercutValue = parseFloat(watercut);
+                if (watercutValue > 50) {
+                    pullForce *= 1.2;
+                    impactForce *= 1.2;
+                    timeEstimate *= 1.3;
+                    stuckProbability *= 1.4;
+                }
+            }
+
+            // Adjust based on temperature
+            if (temp && temp.includes('°C')) {
+                const tempValue = parseFloat(temp);
+                if (tempValue > 35) {
+                    pullForce *= 1.1;
+                    impactForce *= 1.1;
+                    timeEstimate *= 1.2;
+                    stuckProbability *= 1.2;
+                }
+            }
+
+            // Adjust based on depth
+            if (depth && depth.includes('ft')) {
+                const depthValue = parseFloat(depth);
+                if (depthValue > 8000) {
+                    pullForce *= 1.3;
+                    impactForce *= 1.3;
+                    timeEstimate *= 1.4;
+                    stuckProbability *= 1.5;
+                } else if (depthValue > 5000) {
+                    pullForce *= 1.1;
+                    impactForce *= 1.1;
+                    timeEstimate *= 1.2;
+                    stuckProbability *= 1.2;
+                }
+            }
+
+            // Adjust based on casing condition
+            switch (casingCondition) {
+                case 'damaged':
+                    pullForce *= 1.3;
+                    impactForce *= 1.3;
+                    timeEstimate *= 1.4;
+                    stuckProbability *= 1.5;
+                    break;
+                case 'parted':
+                    pullForce *= 1.5;
+                    impactForce *= 1.5;
+                    timeEstimate *= 1.8;
+                    stuckProbability *= 2.0;
+                    break;
+            }
+
+            // Adjust based on additional parameters
+            if (wellExTpa === 'yes') {
+                pullForce *= 1.2;
+                impactForce *= 1.2;
+                timeEstimate *= 1.3;
+                stuckProbability *= 1.4;
+            }
+
+            if (formationAbove === 'yes') {
+                pullForce *= 0.9;
+                impactForce *= 0.9;
+                timeEstimate *= 0.9;
+                stuckProbability *= 0.8;
+            }
+
+
+            const fieldComplexity = parseFloat(document.getElementById('fieldName').selectedOptions[0].getAttribute('data-complexity'));
+            // Scale factors based on complexity (1 is highest complexity)
+            const complexityFactor = 1 + (1 - fieldComplexity) * 0.5; // Ranges from 1.0 to 1.0725
+            pullForce *= complexityFactor;
+            impactForce *= complexityFactor;
+            timeEstimate *= complexityFactor;
+            stuckProbability *= complexityFactor;
+
+            // Apply well geometry factor
+            const wellGeometry = document.getElementById('wellGeometry').value;
+            let geometryFactor = 1;
+            switch(wellGeometry) {
+                case 'lt30':
+                    geometryFactor = 1.0; // Condition 1: 100% success factor
+                    break;
+                case '31to60':
+                    geometryFactor = 0.95; // Condition 2: 95% success factor
+                    break;
+                case 'gt60':
+                    geometryFactor = 0.9; // Condition 3: 90% success factor
+                    break;
+            }
+            pullForce *= geometryFactor;
+            impactForce *= geometryFactor;
+            timeEstimate *= (2 - geometryFactor);
+            stuckProbability *= (2 - geometryFactor);
+
+            // Apply condition factors
+            const combinedConditionFactor = tofCondition * fishDetailCondition;
+            pullForce *= combinedConditionFactor;
+            impactForce *= combinedConditionFactor;
+            timeEstimate *= (2 - combinedConditionFactor); // Better conditions reduce time
+            stuckProbability *= (2 - combinedConditionFactor);
+
+            // Adjust based on fish count (more fish can help if similar)
+            const fishCount = document.querySelectorAll('.fish-entry').length;
+            const fishCountFactor = fishCount > 1 ? 0.9 + (fishCount * 0.03) : 1;
+            stuckProbability *= fishCountFactor;
+            
+            // Ensure probabilities are within bounds
+            stuckProbability = Math.min(Math.max(stuckProbability, 5), 95);
+
+            return {
+                pullForce,
+                impactForce,
+                timeEstimate
+            };
+        }
+
+        function updateFishSummary(
+            totalPullForce = 0,
+            totalImpactForce = 0,
+            totalTimeEstimate = 0,
+            fishCount = 0,
+            successRate = "--",
+            plannedSuccessRate = "--"
+        ) {
+            const fishEntries = document.querySelectorAll('.fish-entry');
+            const summaryDiv = document.getElementById('fishSummary');
+
+            if (fishEntries.length === 0) {
+                summaryDiv.textContent = 'No fish entries added yet.';
+                return;
+            }
+
+            if (fishCount === 0) {
+                // Just show count if not calculated yet
+                const wellName = document.getElementById('wellName').value || 'Unnamed Well';
+                summaryDiv.innerHTML = `
+                    <div class="mb-2">
+                        <div class="text-xs text-gray-500">Well Name</div>
+                        <div class="font-bold text-blue-800">${wellName}</div>
+                    </div>
+                    <div>
+                        ${fishEntries.length} fish entries added (click Calculate to see results)
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate averages
+            const avgPullForce = totalPullForce / fishCount;
+            const avgImpactForce = totalImpactForce / fishCount;
+            const avgTimeEstimate = totalTimeEstimate / fishCount;
+
+            const wellName = document.getElementById('wellName').value || 'Unnamed Well';
+            summaryDiv.innerHTML = `
+                <div class="mb-2">
+                    <div class="text-xs text-gray-500">Well Name</div>
+                    <div class="font-bold text-blue-800">${wellName}</div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div>
+                        <div class="text-xs text-gray-500">Total Fish</div>
+                        <div class="font-bold">${fishCount}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500">Avg Pull Force</div>
+                        <div class="font-bold">${Math.round(avgPullForce)} lbs</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500">Avg Impact Force</div>
+                        <div class="font-bold">${Math.round(avgImpactForce)} lbs</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500">Total Time</div>
+                        <div class="font-bold">${totalTimeEstimate.toFixed(1)} days</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500">Fishing Probability</div>
+                        <div class="font-bold">${successRate}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500">Success Rate</div>
+                        <div class="font-bold">${plannedSuccessRate}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+  function updateEconomicAnalysis(timeEstimate) {
+    // Read inputs with proper fallback values
+    const wellName = document.getElementById('wellName').value || 'Unnamed Well';
+    const oilProduction = parseFloat(document.getElementById('oilProduction').value) || 0;
+    const oilPrice = parseFloat(document.getElementById('oilPrice').value) || 0;
+    const fieldName = document.getElementById('fieldName').value;
+    const fieldComplexity = parseFloat(document.getElementById('fieldName').selectedOptions[0].getAttribute('data-complexity')) || 1;
+
+    // Calculate base values
+    const dailyCost = oilProduction > 0 && oilPrice > 0 ? oilProduction * oilPrice : 2350;
+    const estimatedCost = dailyCost * timeEstimate;
+
+    // --- Fishing Operation Summary Section ---
+    // (Basic fishing operation metrics)
+    document.getElementById('wellNameResult').textContent = wellName;
+    
+    // Success rate based on field complexity, time estimate and fish count
+    const fishCount = document.querySelectorAll('.fish-entry').length;
+    const fishCountFactor = fishCount > 1 ? 0.9 + (fishCount * 0.05) : 1; // More fish can slightly increase success if similar
+    const baseSuccessRate = (100 - (timeEstimate * 5 * (1.5 - fieldComplexity))) * fishCountFactor;
+    const successRate = Math.max(30, Math.min(95, baseSuccessRate)).toFixed(1) + '%';
+    document.getElementById('successRate').textContent = successRate;
+    
+    document.getElementById('estimatedCost').textContent = `$${estimatedCost.toLocaleString(undefined, {maximumFractionDigits: 2})}`;
+    document.getElementById('cycleTime').textContent = `${timeEstimate.toFixed(1)} days`;
+
+    // --- Program Generation with Planned Fishing Section ---
+    // (More detailed planning metrics)
+    
+    // Calculate planned success rate with additional factors
+    const objectPeriod = parseFloat(document.getElementById('objectPeriod').value) || 0;
+    const safetyJoint = parseFloat(document.getElementById('safetyJoint').value) || 0;
+    const tailPresence = parseFloat(document.getElementById('tailPresence').value) || 0;
+    const formationAbove = document.getElementById('formationAbove').value;
+    
+    // Additional factors
+    const timeFactor = Math.max(0.7, 1 - (timeEstimate * 0.05)); // Longer time reduces success
+    const objectAgeFactor = 1 - (objectPeriod * 2); // Older objects reduce success
+    const safetyJointFactor = 1 + (safetyJoint * 2); // Safety joint increases success
+    const tailFactor = 1 - (tailPresence * 0.5); // Long tail reduces success
+    const formationFactor = formationAbove === 'yes' ? 1.1 : 1; // Formation above helps
+    
+    const plannedSuccessRate = Math.max(25, Math.min(95, 
+        baseSuccessRate * timeFactor * objectAgeFactor * safetyJointFactor * tailFactor * formationFactor
+    )).toFixed(1) + '%';
+    document.getElementById('successPrediction').textContent = plannedSuccessRate;
+    
+    // Cost estimate with contingency
+    const contingencyFactor = 1.2; // 20% contingency
+    const plannedCost = estimatedCost * contingencyFactor;
+    document.getElementById('fishingCostEstimate').textContent = `$${plannedCost.toLocaleString(undefined, {maximumFractionDigits: 2})}`;
+    
+    // Time estimate with contingency
+    const timeContingency = 1.15; // 15% time contingency
+    const plannedTime = timeEstimate * timeContingency;
+    document.getElementById('fishingCycleTime').textContent = `${plannedTime.toFixed(1)} days`;
+    
+    // Economic Fishing Time (EFT) calculation
+    const eft = (timeEstimate * 1.2).toFixed(1);
+    document.getElementById('economicFishingTime').textContent = `${eft} days`;
+    
+    // Cost vs EFT comparison
+    const eftCost = dailyCost * parseFloat(eft);
+    const costStatus = plannedCost > eftCost ? "Above EFT (Not Good to Go)" : "Within EFT (Good to Go)";
+    const costDifference = Math.abs(plannedCost - eftCost);
+    document.getElementById('costVsEft').textContent = `${costStatus} (${costDifference > 0 ? '$' + costDifference.toLocaleString(undefined, {maximumFractionDigits: 2}) : 'No difference'})`;
+
+    // Update chart with both estimated and planned costs
+    updateCostChart(estimatedCost, plannedCost);
+}
+
+function updateCostChart(estimatedCost, potentialCostValue) {
+    const ctx = document.getElementById('costChart').getContext('2d');
+
+    // Destroy previous chart if exists
+    if (window.costChart) {
+        window.costChart.destroy();
+    }
+
+    // Create new chart with formatted currency display
+    window.costChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Estimated Cost', 'Potential Cost', 'Average Cost'],
+            datasets: [{
+                label: 'Cost Comparison',
+                data: [estimatedCost, potentialCostValue, 15000],
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.7)',
+                    'rgba(234, 179, 8, 0.7)',
+                    'rgba(16, 185, 129, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(234, 179, 8, 1)',
+                    'rgba(16, 185, 129, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Cost ($)' },
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': $' + context.raw.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+        // Initialize with default values
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set default values
+            document.getElementById('holeSize').value = '8.5';
+            document.getElementById('mudWeight').value = '10.5';
+            document.getElementById('wellGeometry').value = 'lt30';
+
+            // Add one fish entry by default
+            addFishEntry();
+        });
+    </script>
+    <p
+      style="
+        border-radius: 8px;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+        margin-top: 16px;
+        position: fixed;
+        left: 8px;
+        bottom: 8px;
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 4px 8px;
+      "
+    >
+      Made with
+      <img
+        src="https://enzostvs-deepsite.hf.space/logo.svg"
+        alt="DeepSite Logo"
+        style="
+          width: 16px;
+          height: 16px;
+          vertical-align: middle;
+          display: inline-block;
+          margin-right: 3px;
+          filter: brightness(0) invert(1);
+        "
+      /><a
+        href="https://enzostvs-deepsite.hf.space"
+        style="color: #fff; text-decoration: underline"
+        target="_blank"
+        >DeepSite</a
+      >
+      - 🧬
+      <a
+        href="https://enzostvs-deepsite.hf.space?remix=Stringer3232/focus-v3"
+        style="color: #fff; text-decoration: underline"
+        target="_blank"
+        >Remix</a
+      >
+    </p>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Stringer3232/focus-final" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p><p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://deepsite.hf.co/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://deepsite.hf.co" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://deepsite.hf.co?remix=Stringer3232/focus-revamp" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p><p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Stringer3232/focus-app" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p><p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Stringer3232/focus-application" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p><p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Stringer3232/focus-aplikasi" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p><p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Stringer3232/focus-proto" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
